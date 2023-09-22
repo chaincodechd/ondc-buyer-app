@@ -19,43 +19,43 @@
   tasks:
     - name: Clone biap-client-node-js
       git:
-        repo: "https://github.com/ondc-official/biap-client-node-js.git"
-        dest: "/home/ubuntu/biap-client-node-js"
+        repo: "https://github.com/chaincodedev/biap-client-node-js.git"
+        dest: "/home/ubuntu/buyer/biap-client-node-js"
         version: "master"
         force: yes
 
     - name: Clone biap ui
       git:
-        repo: "https://github.com/ondc-official/biap-app-ui-front.git"
-        dest: "/home/ubuntu/biap-app-ui-front"
+        repo: "https://github.com/chaincodedev/biap-app-ui-front.git"
+        dest: "/home/ubuntu/buyer/biap-app-ui-front"
         version: "master"
         force: yes
 
     - name: Clone biap-bugzilla-service
       git:
-        repo: "https://github.com/ONDC-Official/biap-bugzilla-service"
-        dest: "/home/ubuntu/biap-bugzilla-service"
+        repo: "https://github.com/chaincodedev/biap-bugzilla-service"
+        dest: "/home/ubuntu/buyer/biap-bugzilla-service"
         version: "main"
         force: yes
 
     - name: Clone py ondc protocol
       git:
-        repo: "https://github.com/ONDC-Official/py-protocol-layer.git"
-        dest: "/home/ubuntu/py-ondc-protocol"
+        repo: "https://github.com/chaincodedev/py-protocol-layer.git"
+        dest: "/home/ubuntu/buyer/py-ondc-protocol"
         version: "master"
         force: yes
 
     - name: Clone biap-igm-node-js
       git:
-        repo: "https://github.com/ONDC-Official/biap-igm-node-js.git"
-        dest: "/home/ubuntu/biap-igm-node-js"
+        repo: "https://github.com/chaincodedev/biap-igm-node-js.git"
+        dest: "/home/ubuntu/buyer/biap-igm-node-js"
         version: "main"
         force: yes
 
     - name: Copy config directory
       copy:
         src: "{{ playbook_dir }}/../biap-client-node-js/config"
-        dest: "/home/ubuntu/biap-client-node-js/"
+        dest: "/home/ubuntu/buyer/biap-client-node-js/"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
@@ -63,7 +63,7 @@
     - name: Copy config directory for igm
       copy:
         src: "{{ playbook_dir }}/../biap-igm-node-js/config"
-        dest: "/home/ubuntu/biap-igm-node-js/"
+        dest: "/home/ubuntu/buyer/biap-igm-node-js/"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
@@ -71,55 +71,55 @@
     - name: Copy lets encrypt with domain replaced
       copy:
         src: "{{ playbook_dir }}/../init-letsencrypt.sh"
-        dest: "/home/ubuntu/init-letsencrypt.sh"
+        dest: "/home/ubuntu/buyer/init-letsencrypt.sh"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with domain name
       replace:
-        path: "/home/ubuntu/init-letsencrypt.sh"
+        path: "/home/ubuntu/buyer/init-letsencrypt.sh"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
     - name: copy Dockerfile without SSL as dockerfile in biap-app-ui-front
       copy:
         src: "{{ playbook_dir }}/../biap-app-ui-front/DockerfileWithoutSSL"
-        dest: "/home/ubuntu/biap-app-ui-front/Dockerfile"
+        dest: "/home/ubuntu/buyer/biap-app-ui-front/Dockerfile"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with in nginx.conf
       replace:
-        path: "/home/ubuntu/biap-app-ui-front/nginx-without-ssl.conf"
+        path: "/home/ubuntu/buyer/biap-app-ui-front/nginx-without-ssl.conf"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
     - name: copy env file with domain replaced
       copy:
         src: "{{ playbook_dir }}/../.env{{ envtype }}"
-        dest: "/home/ubuntu/.env"
+        dest: "/home/ubuntu/buyer/.env"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with domain name
       replace:
-        path: "/home/ubuntu/.env"
+        path: "/home/ubuntu/buyer/.env"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
     - name: Copy docker-compose file with domain replaced
       copy:
         src: "{{ playbook_dir }}/../docker-compose-with-images.yaml"
-        dest: "/home/ubuntu/docker-compose.yml"
+        dest: "/home/ubuntu/buyer/docker-compose.yml"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: Run docker compose up
-      shell: "cd /home/ubuntu/ && sudo docker-compose build && sudo docker-compose up -d"
+      shell: "cd /home/ubuntu/buyer/ && sudo docker-compose build && sudo docker-compose up -d"
 
     - name: run letsencrypt
-      shell: "cd /home/ubuntu/ && sudo ./init-letsencrypt.sh"
+      shell: "cd /home/ubuntu/buyer/ && sudo ./init-letsencrypt.sh"
